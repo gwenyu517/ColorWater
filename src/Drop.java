@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Drop {
     private int size;
@@ -8,6 +9,8 @@ public class Drop {
     private int numPart;
     private int pRadius = 5;
     private int pDiam = 2*pRadius;
+
+    private Point location;
 
     private BufferedImage image;
     private Graphics2D g2d;
@@ -19,6 +22,9 @@ public class Drop {
     public Drop(int size, BufferedImage image){
         this.size = size;
         this.image = image;
+
+
+        location = new Point();
 
         determineNumOfPart();         // 1 + (size * 6) locations, 9 at each
         particles = new Particle[numPart];
@@ -38,9 +44,10 @@ public class Drop {
         int num = 6;
         numPart = 9;        // 9 at center
         for (int i = 1; i <= size; ++i){
-            numPart += i * num * 9;
+            numPart += num * 9;
             num = 2 * num;
         }
+        System.out.println("                                    " + numPart);
     }
 
     public BufferedImage getImage(){
@@ -48,6 +55,7 @@ public class Drop {
     }
 
     public void dripAt(Point point){
+        location.setLocation(point);
         double theta;
         double p = pRadius;
         double dTheta = Math.PI / 3;
@@ -58,7 +66,6 @@ public class Drop {
 
         int num = 6;
 
-
         for (int i = 0; i <= size; i++){
             theta = 0;
             if (i == 0){
@@ -67,13 +74,11 @@ public class Drop {
             }
             else {
                 for (int j = 0; j < num; ++j) {
-                    System.out.println("i = " + i);
-                    System.out.println("j = " + j);
+              //      System.out.println("i = " + i);
+                //    System.out.println("j = " + j);
                     x = point.x + p * Math.sin(theta);
                     y = point.y + p * Math.cos(theta);
 
-                    //     particles[k] = new Particle(x, y, theta);
-                    //   g2d.fill(new Ellipse2D.Double(particles[k].x, particles[k].y, pDiam, pDiam));
                     drawParticlesAt(x, y, k, theta);
                     theta += dTheta;
 
@@ -88,12 +93,56 @@ public class Drop {
 
     private void drawParticlesAt(double x, double y, int k, double theta){
         for (int i = 0; i < 9; ++i){
-            System.out.println(k);
+    //        System.out.println(k);
             particles[k] = new Particle(x, y, theta);
             g2d.fill(new Ellipse2D.Double(particles[k].x, particles[k].y, pDiam, pDiam));
             ++k;
         }
     }
 
+    public void spread(){
+        double x;
+        double y;
+
+        for (int i = 0; i < numPart; ++i){
+            g2d.setColor(Color.WHITE);
+            System.out.println(i);
+    //        g2d.fill(new Ellipse2D.Double(particles[i].x, particles[i].y, 10, 10));
+            g2d.setColor(color);
+
+            particles[i].determineBias();
+            particles[i].determineDirection();
+
+            particles[i].theta += maxRotation * randomValue() * particles[i].direction;
+
+            x = 5*Math.cos(particles[i].theta) + particles[i].x;
+            y = 5* -1 * Math.sin(particles[i].theta) + particles[i].y;
+
+            if (withinBounds(x, y)){
+                g2d.fill(new Ellipse2D.Double(x, y, 10, 10));
+                particles[i].x = x;
+                particles[i].y = y;
+            }
+            else{
+                g2d.fill(new Ellipse2D.Double(particles[i].x, particles[i].y, 10, 10));
+            }
+        }
+    }
+
+
+    private boolean withinBounds(double x, double y){
+        double i = location.x - x;
+        double j = location.y - y;
+        if ((i*i) + (j*j) < (200*200))
+            return true;
+        else return false;
+        //      System.out.println(i + ", " + j + " = " + ((i*i) + (j*j)));
+        //    return true;
+    }
+
+    public double randomValue(){
+        Random r = new Random();
+        return r.nextDouble();
+    }
 
 }

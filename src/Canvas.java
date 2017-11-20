@@ -29,7 +29,7 @@ public class Canvas extends JPanel{
         setMaximumSize(size);
         setPreferredSize(size);
 
-        g2d.setColor(Color.RED);
+        g2d.setColor(Color.WHITE);
         g2d.fillRect(0,0,WIDTH, HEIGHT);
         repaint();
 
@@ -50,15 +50,17 @@ public class Canvas extends JPanel{
             public void run(){
 
                 // Todo: setSize() function
-                int size = 1;          // given in rounds/layers
+                int size = 5;          // given in rounds/layers
                 Drop drop = new Drop(size, image);
-                image = drop.getImage();
+         //       image = drop.getImage();
 
                 for (int i = 0; i < dropDuration; ++i){
                     if (i == 0)
                         drop.dripAt(point);
                     else
-                //        drop.spread();
+                        drop.spread();
+
+                        image = drop.getImage();
 
                     SwingUtilities.invokeLater(
                             new Runnable(){
