@@ -1,13 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 public class Canvas extends JPanel{
     private final int WIDTH;
     private final int HEIGHT;
+
+    Timer timer;
+    int MILLESECONDS_BEFORE_CLEAR = 2000;
+
 
     private WetAreaMask waterLayer;
     private BufferedImage image;
@@ -43,6 +45,17 @@ public class Canvas extends JPanel{
 
             }
         });
+
+        timer = new Timer(MILLESECONDS_BEFORE_CLEAR, new ActionListener(){
+            public void actionPerformed(ActionEvent evt){
+                timer.stop();
+                g2d.setColor(Color.WHITE);
+                g2d.fillRect(0,0,WIDTH, HEIGHT);
+                repaint();
+                timer.restart();
+            }
+        });
+        timer.start();
     }
 
     private void addDropAt(Point point){
@@ -52,6 +65,7 @@ public class Canvas extends JPanel{
                 // Todo: setSize() function
                 int size = 5;          // given in rounds/layers
                 Drop drop = new Drop(size, image);
+                drop.randomColor();
          //       image = drop.getImage();
 
                 for (int i = 0; i < dropDuration; ++i){
@@ -70,7 +84,6 @@ public class Canvas extends JPanel{
                             }
                     );
                 }
-
             }
         }).start();
     }

@@ -10,7 +10,7 @@ public class Drop {
     private int pRadius = 5;
     private int pDiam = 2*pRadius;
 
-    private int depth = 1;
+    private int depth = 7;
 
     private Point location;
 
@@ -103,8 +103,8 @@ public class Drop {
         double y;
 
         for (int i = 0; i < numPart; ++i){
-            g2d.setColor(Color.WHITE);
-            System.out.println(i);
+  //          g2d.setColor(Color.WHITE);
+     //       System.out.println(i);
     //        g2d.fill(new Ellipse2D.Double(particles[i].x, particles[i].y, 10, 10));
             g2d.setColor(color);
 
@@ -116,7 +116,7 @@ public class Drop {
             x = 5*Math.cos(particles[i].theta) + particles[i].x;
             y = 5* -1 * Math.sin(particles[i].theta) + particles[i].y;
 
-            if (withinBounds(x, y)){
+            if (withinWetMask(x, y)){
                 g2d.fill(new Ellipse2D.Double(x, y, 10, 10));
                 particles[i].x = x;
                 particles[i].y = y;
@@ -127,10 +127,13 @@ public class Drop {
         }
     }
 
+    private boolean withinWetMask(double x, double y){
 
-    private boolean withinBounds(double x, double y){
+
         double i = location.x - x;
         double j = location.y - y;
+
+
         if ((i*i) + (j*j) < (200*200))
             return true;
         else return false;
@@ -139,6 +142,10 @@ public class Drop {
     public double randomValue(){
         Random r = new Random();
         return r.nextDouble();
+    }
+
+    public void randomColor(){
+        color = new Color((int)(randomValue()*255), (int)(randomValue()*255), (int)(randomValue()*255), 30);
     }
 
 }
