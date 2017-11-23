@@ -10,6 +10,8 @@ public class Drop {
     private int pRadius = 5;
     private int pDiam = 2*pRadius;
 
+    private int depth = 1;
+
     private Point location;
 
     private BufferedImage image;
@@ -42,12 +44,11 @@ public class Drop {
 
     private void determineNumOfPart(){
         int num = 6;
-        numPart = 9;        // 9 at center
+        numPart = depth;        // 9 at center
         for (int i = 1; i <= size; ++i){
-            numPart += num * 9;
+            numPart += num * depth;
             num = 2 * num;
         }
-        System.out.println("                                    " + numPart);
     }
 
     public BufferedImage getImage(){
@@ -70,19 +71,17 @@ public class Drop {
             theta = 0;
             if (i == 0){
                 drawParticlesAt(x, y, k, theta);
-                k += 9;
+                k += depth;
             }
             else {
                 for (int j = 0; j < num; ++j) {
-              //      System.out.println("i = " + i);
-                //    System.out.println("j = " + j);
                     x = point.x + p * Math.sin(theta);
                     y = point.y + p * Math.cos(theta);
 
                     drawParticlesAt(x, y, k, theta);
                     theta += dTheta;
 
-                    k += 9;
+                    k += depth;
                 }
                 p += pRadius;
                 num = 2 * num;
@@ -92,8 +91,7 @@ public class Drop {
     }
 
     private void drawParticlesAt(double x, double y, int k, double theta){
-        for (int i = 0; i < 9; ++i){
-    //        System.out.println(k);
+        for (int i = 0; i < depth; ++i){
             particles[k] = new Particle(x, y, theta);
             g2d.fill(new Ellipse2D.Double(particles[k].x, particles[k].y, pDiam, pDiam));
             ++k;
@@ -136,8 +134,6 @@ public class Drop {
         if ((i*i) + (j*j) < (200*200))
             return true;
         else return false;
-        //      System.out.println(i + ", " + j + " = " + ((i*i) + (j*j)));
-        //    return true;
     }
 
     public double randomValue(){
