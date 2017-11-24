@@ -13,11 +13,13 @@ public class Drop {
     private int depth = 7;
 
     private Point location;
+    private boolean colorMode = true;
 
+    private BufferedImage wetAreaMask;
     private BufferedImage image;
     private Graphics2D g2d;
 
-    private Color color = new Color(0,0,0,30);
+    private Color color = Color.BLACK;
 
     private double maxRotation = .5;
 
@@ -53,6 +55,10 @@ public class Drop {
 
     public BufferedImage getImage(){
         return this.image;
+    }
+
+    public void setWetAreaMask(BufferedImage wetAreaMask){
+        this.wetAreaMask = wetAreaMask;
     }
 
     public void dripAt(Point point){
@@ -98,6 +104,11 @@ public class Drop {
         }
     }
 
+    public void setColorMode(boolean mode){
+        colorMode = mode;
+    }
+
+
     public void spread(){
         double x;
         double y;
@@ -128,15 +139,22 @@ public class Drop {
     }
 
     private boolean withinWetMask(double x, double y){
+        if (colorMode == false)
+            return true;
 
+        if (wetAreaMask.getRGB((int)x, (int)y) != Color.WHITE.getRGB())
+            return true;
+        else
+            return false;
 
+/*
         double i = location.x - x;
         double j = location.y - y;
 
 
         if ((i*i) + (j*j) < (200*200))
             return true;
-        else return false;
+        else return false;*/
     }
 
     public double randomValue(){

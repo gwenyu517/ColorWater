@@ -10,8 +10,11 @@ public class Canvas extends JPanel{
     Timer timer;
     int MILLESECONDS_BEFORE_CLEAR = 2000;
 
+    private boolean waterMode;
 
-    private WetAreaMask waterLayer;
+  //  private WetAreaMask waterLayer;
+    private BufferedImage water;
+    private Graphics2D g2d_water;
     private BufferedImage image;
     private Graphics2D g2d;                 // ????
 
@@ -22,9 +25,15 @@ public class Canvas extends JPanel{
         WIDTH = width;
         HEIGHT = height;
 
+        water = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        g2d_water = water.createGraphics();
+        g2d_water.setColor(Color.WHITE);
+        g2d_water.fillRect(0,0,WIDTH, HEIGHT);
+
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         g2d = image.createGraphics();// ????
 
+        waterMode = true;
 
         Dimension size = new Dimension(WIDTH, HEIGHT);
         setMinimumSize(size);
@@ -49,8 +58,11 @@ public class Canvas extends JPanel{
         timer = new Timer(MILLESECONDS_BEFORE_CLEAR, new ActionListener(){
             public void actionPerformed(ActionEvent evt){
                 timer.stop();
-                g2d.setColor(Color.WHITE);
-                g2d.fillRect(0,0,WIDTH, HEIGHT);
+
+                // ToDo: incrementalDry()
+
+        //        g2d.setColor(Color.WHITE);
+          //      g2d.fillRect(0,0,WIDTH, HEIGHT);
                 repaint();
                 timer.restart();
             }
@@ -58,6 +70,94 @@ public class Canvas extends JPanel{
         timer.start();
     }
 
+    public void setWaterMode(boolean mode){
+        waterMode = mode;
+    }
+
+    private void addDropAt(Point point){
+        if (waterMode){
+            new Thread( new Runnable() {
+                public void run(){
+
+                    // Todo: setSize() function
+                    int size = 5;          // given in rounds/layers
+                    Drop drop = new Drop(size, water);
+                    drop.setColorMode(false);
+             //       drop.randomColor();
+                    //       image = drop.getImage();
+
+                    for (int i = 0; i < dropDuration; ++i){
+                        if (i == 0)
+                            drop.dripAt(point);
+                        else
+                            drop.spread();
+
+                        water = drop.getImage();
+/*
+                        SwingUtilities.invokeLater(
+                                new Runnable(){
+                                    public void run(){
+                                        repaint();
+                                    }
+                                }
+                        );*/
+                    }
+                }
+            }).start();
+        }
+        else{
+            new Thread( new Runnable() {
+                public void run(){
+
+                    // Todo: setSize() function
+                    int size = 5;          // given in rounds/layers
+                    Drop drop = new Drop(size, image);
+                    drop.setWetAreaMask(water);
+                    drop.setColorMode(true);
+
+                    drop.randomColor();
+                    //       image = drop.getImage();
+
+                    for (int i = 0; i < dropDuration; ++i){
+                        if (i == 0)
+                            drop.dripAt(point);
+                        else
+                            drop.spread();
+
+                        image = drop.getImage();
+
+                        SwingUtilities.invokeLater(
+                                new Runnable(){
+                                    public void run(){
+                                        repaint();
+                                    }
+                                }
+                        );
+                    }
+                }
+            }).start();
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
     private void addDropAt(Point point){
         new Thread( new Runnable() {
             public void run(){
@@ -87,7 +187,7 @@ public class Canvas extends JPanel{
             }
         }).start();
     }
-
+*/
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
