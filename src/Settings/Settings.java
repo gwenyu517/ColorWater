@@ -1,4 +1,7 @@
+package Settings;
+
 import javax.swing.*;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -15,31 +18,22 @@ public class Settings extends JPanel {
         tabbedPane.addTab("Brush", brushPanel);
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 
-        JComponent paintPanel = makeTextPanel("Paint");
+        JComponent paintPanel = makePaintPanel();
         tabbedPane.addTab("Paint", paintPanel);
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
 
-        JComponent canvasPanel = makeTextPanel("Canvas");
-        tabbedPane.addTab("Canvas", canvasPanel);
-        canvasPanel.setPreferredSize(new Dimension(500, 1000));
-        tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
+    //    JComponent canvasPanel = makeTextPanel("Canvas");
+     //   tabbedPane.addTab("Canvas", canvasPanel);
+     //   canvasPanel.setPreferredSize(new Dimension(500, 1000));
+     //   tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
 
 
         add(tabbedPane);
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
     }
 
-    protected JComponent makeTextPanel(String text) {
-        JPanel panel = new JPanel(false);
-        JLabel filler = new JLabel(text);
-        filler.setHorizontalAlignment(JLabel.CENTER);
-        panel.setLayout(new GridLayout(1, 1));
-        panel.add(filler);
-        return panel;
-    }
-
-    protected JComponent makeBrushPanel(){
+    protected JPanel makeBrushPanel(){
         JPanel panel = new JPanel (false);
 
         final int SIZE_MIN = 0;
@@ -69,9 +63,25 @@ public class Settings extends JPanel {
         panel.add(brushSize);
         panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
+
+        // ToDo: CREATE PREVIEW PANEL
+
         return panel;
     }
 
+    private JPanel makePaintPanel(){
+        JPanel panel = new JPanel();
+
+        // Color section
+        JLabel presetLabel = new JLabel("Preset", JLabel.LEFT);
+
+        JComponent newContentPane = new ColorPanel();
+        newContentPane.setOpaque(true);
+        panel.add(newContentPane);
+
+
+        return panel;
+    }
 
 
 }
@@ -87,5 +97,15 @@ class SliderListener implements ChangeListener {
         // ToDo: adjust brush size
      //       System.out.println(val);
         }
+    }
+}
+
+class PresetColorListener implements ChangeListener {
+    public void stateChanged(ChangeEvent e){
+      //  Color newColor = tcc.getColor();
+
+            // ToDo: adjust brush size
+            //       System.out.println(val);
+
     }
 }
