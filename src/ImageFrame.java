@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +13,7 @@ public class ImageFrame extends JFrame {
         this.setSize(width, height);
 
         // Todo: addTabs();
-
+        addTabs(width / 2, height);
 
         // Temp menus
         addMenu();
@@ -21,6 +22,12 @@ public class ImageFrame extends JFrame {
         addCanvas(width, height);
         repaint();
     }
+
+    private void addTabs(int width, int height){
+        Settings s = new Settings();
+        this.add(s, BorderLayout.WEST);
+    }
+
 
     private void addCanvas(int width, int height){
         c = new Canvas(width, height);

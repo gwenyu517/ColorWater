@@ -20,6 +20,7 @@ public class ColorWater {
     private static void createAndShowGUI(){
         JFrame frame = new ImageFrame(WIDTH, HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    //    frame.pack();
         frame.setVisible(true);
     }
 }
